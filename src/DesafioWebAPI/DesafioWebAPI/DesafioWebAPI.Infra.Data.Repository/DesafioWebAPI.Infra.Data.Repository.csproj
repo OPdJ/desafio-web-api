@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DesafioWebAPI.Domain\DesafioWebAPI.Domain.csproj" />
+    <ProjectReference Include="..\DesafioWebAPI.Infra.Data.Context\DesafioWebAPI.Infra.Data.Context.csproj" />
+  </ItemGroup>
+
+</Project>

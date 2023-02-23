@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DesafioWebAPI.Application\DesafioWebAPI.Application.csproj" />
+    <ProjectReference Include="..\DesafioWebAPI.Infra.Data.Repository\DesafioWebAPI.Infra.Data.Repository.csproj" />
+  </ItemGroup>
+
+</Project>
