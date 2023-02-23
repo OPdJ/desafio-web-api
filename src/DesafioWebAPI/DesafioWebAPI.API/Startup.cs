@@ -2,7 +2,6 @@ using Autofac;
 using DesafioWebAPI.Infra.CrossCutting.IoC;
 using DesafioWebAPI.Infra.CrossCutting.IoC.Modules;
 using DesafioWebAPI.Infra.Data.Context;
-using FoolProof.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -41,7 +40,6 @@ namespace DesafioWebAPI.API
             {
                 s.SwaggerDoc("v1", new OpenApiInfo { Title = "Desafio Web API", Version = "v1" });
             });
-            services.AddFoolProof();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

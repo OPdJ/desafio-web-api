@@ -1,5 +1,4 @@
 ﻿using DesafioWebAPI.Infra.CrossCutting.MappingConfig.Entities.Common;
-using FoolProof.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
