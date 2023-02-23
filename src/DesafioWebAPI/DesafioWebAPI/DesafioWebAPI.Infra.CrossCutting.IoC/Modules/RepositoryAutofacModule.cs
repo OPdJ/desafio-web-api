@@ -8,7 +8,7 @@ using System.Text;
 
 namespace DesafioWebAPI.Infra.CrossCutting.IoC.Modules
 {
-    class RepositoryAutofacModule : Module
+    public class RepositoryAutofacModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

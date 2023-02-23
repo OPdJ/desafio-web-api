@@ -1,4 +1,8 @@
+using Autofac;
+using DesafioWebAPI.Infra.CrossCutting.IoC;
+using DesafioWebAPI.Infra.CrossCutting.IoC.Modules;
 using DesafioWebAPI.Infra.Data.Context;
+using FoolProof.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -8,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +35,19 @@ namespace DesafioWebAPI.API
             var connection = Configuration["ConnectionStrings:DesafioWebAPIDB"];
             services.AddDbContext<DesafioWebAPIContext>(option => option.UseSqlServer(connection));
             services.AddControllers();
+            services.AddSwaggerGen(s =>
+            {
+                s.SwaggerDoc("v1", new OpenApiInfo { Title = "Desafio Web API", Version = "v1" });
+            });
+            services.AddFoolProof();
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterModule<AutoMapperAutofacModule>();
+            builder.RegisterModule<RepositoryAutofacModule>();
+            builder.RegisterModule<ApplicationAutofacModule>();
+            builder.RegisterModule<ServiceAutofacModule>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,6 +57,13 @@ namespace DesafioWebAPI.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(s => 
+            {
+                s.SwaggerEndpoint("/swagger/v1/swagger.json", "Desafio Web API");
+            });
 
             app.UseHttpsRedirection();
 

@@ -35,7 +35,22 @@ namespace DesafioWebAPI.Infra.Data.Repository.Common
 
         public void DetachLocal(Func<TEntity, bool> predicate = null)
         {
-            throw new NotImplementedException();
+            if (predicate == null)
+            {
+                var locals = _context.Set<TEntity>().Local.ToList();
+
+                foreach (var local in locals)
+                {
+                    _context.Entry(local).State = EntityState.Detached;
+                }
+            }
+            else
+            {
+                var local = _context.Set<TEntity>().Local.Where(predicate).FirstOrDefault();
+
+                if (local != null)
+                    _context.Entry(local).State = EntityState.Detached;
+            }
         }
 
         public IEnumerable<TEntity> GetAll()
@@ -50,6 +65,8 @@ namespace DesafioWebAPI.Infra.Data.Repository.Common
 
         public void Update(TEntity entity, params object[] properties)
         {
+            DetachLocal();
+
             if (properties.Length == 0)
             {
                 _context.Entry(entity).State = EntityState.Modified;

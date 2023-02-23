@@ -31,4 +31,4 @@ namespace DesafioWebAPI.Infra.CrossCutting.IoC.Modules
         }
     }
 }
-}
+

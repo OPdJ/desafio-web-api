@@ -1,4 +1,5 @@
-﻿using DesafioWebAPI.Application.Interfaces;
+﻿using DesafioWebAPI.API.Controllers.Custom;
+using DesafioWebAPI.Application.Interfaces;
 using DesafioWebAPI.Infra.CrossCutting.MappingConfig.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,7 +13,7 @@ namespace DesafioWebAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProdutoController : ControllerBase
+    public class ProdutoController : ControllerCustom
     {
         private readonly IProdutoAppService _appService;
 
@@ -41,17 +42,31 @@ namespace DesafioWebAPI.API.Controllers
         {
             if (entityVM == null)
                 return NotFound();
-
-            try
+            if (entityVM.Fabricacao != null && entityVM.Validade != null)
             {
-                _appService.Add(entityVM);
-            }
-            catch (Exception ex)
-            {
-                //Logger
+                if (entityVM.Fabricacao >= entityVM.Validade)
+                {
+                    ModelState.AddModelError(nameof(entityVM.Fabricacao), "Fabricação não pode ser maior ou igual a validade!");
+                    return ValidationProblem();
+                }
             }
 
-            return Ok("Cadastro realizado com sucesso.");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _appService.Add(entityVM);
+
+                    return Ok("Cadastro realizado com sucesso.");
+                }
+                catch (Exception ex)
+                {
+                    //Logger
+                    return BadRequest($"{ex.Message}");
+                }
+            }
+
+            return ValidationProblem();
         }
 
         // PUT api/<ProdutoController>/5
@@ -60,36 +75,60 @@ namespace DesafioWebAPI.API.Controllers
         {
             if (entityVM == null)
                 return NotFound();
-
-            try
+            if (entityVM.Fabricacao != null && entityVM.Validade != null)
             {
-                _appService.Update(entityVM);
-            }
-            catch (Exception ex)
-            {
-                //Logger
+                if (entityVM.Fabricacao >= entityVM.Validade)
+                {
+                    ModelState.AddModelError(nameof(entityVM.Fabricacao), "Fabricação não pode ser maior ou igual a validade!");
+                    return ValidationProblem();
+                }
             }
 
-            return Ok("Atualização realizada com sucesso.");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _appService.Update(entityVM);
+
+                    return Ok("Atualização realizada com sucesso.");
+                }
+                catch (Exception ex)
+                {
+                    //Logger
+                    return BadRequest($"{ex.Message}");
+                }
+            }
+
+            var errors = ModelError();
+
+            return ValidationProblem();
         }
 
         // DELETE api/<ProdutoController>/5
-        [HttpDelete()]
-        public ActionResult Delete([FromBody] ProdutoViewModel entityVM)
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
         {
-            if (entityVM == null)
-                return NotFound();
-
             try
             {
-                _appService.Update(entityVM);
+                var entityVM = _appService.GetById(id);
+
+                if (entityVM != null)
+                {
+                    entityVM.Situacao = false;
+                    _appService.Update(entityVM);
+
+                    return Ok("Exclusão lógica realizada com sucesso.");
+                }
+                else
+                {
+                    return Ok($"Não retornou nenhum item com o id: {id}.");
+                }
             }
             catch (Exception ex)
             {
                 //Logger
+                return BadRequest($"{ex.Message}");
             }
-
-            return Ok("Exclusão realizada com sucesso.");
         }
     }
 }
