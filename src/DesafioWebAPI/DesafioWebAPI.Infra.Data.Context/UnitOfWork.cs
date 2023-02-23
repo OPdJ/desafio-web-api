@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DesafioWebAPI.Infra.Data.Context
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly DesafioWebAPIContext _context;
         private IDbContextTransaction _trasaction;
@@ -35,6 +35,11 @@ namespace DesafioWebAPI.Infra.Data.Context
         public void SaveChanges()
         {
             _context.SaveChanges();
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DesafioWebAPI.Application.Interfaces;
+﻿using DesafioWebAPI.API.Models.Produto;
+using DesafioWebAPI.Application.Interfaces;
 using DesafioWebAPI.Infra.CrossCutting.MappingConfig.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +49,31 @@ namespace DesafioWebAPI.API.Controllers
                 if (entityVM == null)
                 {
                     return Ok($"Não retornou nenhum item com o id: {id}.");
+                }
+
+                return Ok(entityVM);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
+            }
+        }
+
+        // GET api/<ProdutoController>/5
+        [HttpGet]
+        [Route("~/GetPaged")]
+        public ActionResult<string> GetPaged([FromQuery] QueryProdutoParams qp)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(qp.))
+                {
+                }
+                var entityVM = _appService.GetById(1);
+
+                if (entityVM == null)
+                {
+                    //return Ok($"Não retornou nenhum item com o id: {id}.");
                 }
 
                 return Ok(entityVM);
