@@ -4,9 +4,9 @@ Descricao varchar(250) not null,
 Situacao bit,
 Fabricacao datetime2,
 Validade datetime2,
-FornecedorCodigo bigint,
+FornecedorCodigo varchar(50),
 Fornecedor varchar(100),
-FornecedorCNPJ varchar(50)
+FornecedorCNPJ varchar(14)
 constraint PK_Produto primary key (Id)
 )
 go

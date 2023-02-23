@@ -6,6 +6,7 @@ using FoolProof.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -60,12 +62,30 @@ namespace DesafioWebAPI.API
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(s => 
+            app.UseSwaggerUI(s =>
             {
                 s.SwaggerEndpoint("/swagger/v1/swagger.json", "Desafio Web API");
             });
 
             app.UseHttpsRedirection();
+
+            var defaultDateCulture = "pt-BR";
+            var ci = new CultureInfo(defaultDateCulture);
+            ci.NumberFormat.NumberDecimalSeparator = ",";
+            ci.NumberFormat.CurrencyDecimalSeparator = ",";
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(ci),
+                SupportedCultures = new List<CultureInfo>
+                {
+                    ci,
+                },
+                SupportedUICultures = new List<CultureInfo>
+                {
+                    ci,
+                }
+            });
 
             app.UseRouting();
 
@@ -75,6 +95,8 @@ namespace DesafioWebAPI.API
             {
                 endpoints.MapControllers();
             });
+
+
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using DesafioWebAPI.API.Controllers.Custom;
-using DesafioWebAPI.Application.Interfaces;
+﻿using DesafioWebAPI.Application.Interfaces;
 using DesafioWebAPI.Infra.CrossCutting.MappingConfig.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace DesafioWebAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProdutoController : ControllerCustom
+    public class ProdutoController : ControllerBase
     {
         private readonly IProdutoAppService _appService;
 
@@ -26,14 +26,36 @@ namespace DesafioWebAPI.API.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return Ok(_appService.GetAll());
+            try
+            {
+                var entityVM = _appService.GetAll();
+                return Ok(entityVM);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
+            }
         }
 
         // GET api/<ProdutoController>/5
         [HttpGet("{id}")]
         public ActionResult<string> Get(long id)
         {
-            return Ok(_appService.GetById(id));
+            try
+            {
+                var entityVM = _appService.GetById(id);
+
+                if (entityVM == null)
+                {
+                    return Ok($"Não retornou nenhum item com o id: {id}.");
+                }
+
+                return Ok(entityVM);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
+            }
         }
 
         // POST api/<ProdutoController>
@@ -42,14 +64,6 @@ namespace DesafioWebAPI.API.Controllers
         {
             if (entityVM == null)
                 return NotFound();
-            if (entityVM.Fabricacao != null && entityVM.Validade != null)
-            {
-                if (entityVM.Fabricacao >= entityVM.Validade)
-                {
-                    ModelState.AddModelError(nameof(entityVM.Fabricacao), "Fabricação não pode ser maior ou igual a validade!");
-                    return ValidationProblem();
-                }
-            }
 
             if (ModelState.IsValid)
             {
@@ -62,7 +76,7 @@ namespace DesafioWebAPI.API.Controllers
                 catch (Exception ex)
                 {
                     //Logger
-                    return BadRequest($"{ex.Message}");
+                    return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
                 }
             }
 
@@ -75,14 +89,6 @@ namespace DesafioWebAPI.API.Controllers
         {
             if (entityVM == null)
                 return NotFound();
-            if (entityVM.Fabricacao != null && entityVM.Validade != null)
-            {
-                if (entityVM.Fabricacao >= entityVM.Validade)
-                {
-                    ModelState.AddModelError(nameof(entityVM.Fabricacao), "Fabricação não pode ser maior ou igual a validade!");
-                    return ValidationProblem();
-                }
-            }
 
             if (ModelState.IsValid)
             {
@@ -95,11 +101,9 @@ namespace DesafioWebAPI.API.Controllers
                 catch (Exception ex)
                 {
                     //Logger
-                    return BadRequest($"{ex.Message}");
+                    return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
                 }
             }
-
-            var errors = ModelError();
 
             return ValidationProblem();
         }
@@ -127,7 +131,7 @@ namespace DesafioWebAPI.API.Controllers
             catch (Exception ex)
             {
                 //Logger
-                return BadRequest($"{ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
             }
         }
     }

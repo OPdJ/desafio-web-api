@@ -11,7 +11,7 @@ namespace DesafioWebAPI.Domain.Entities
         public bool Situacao { get; set; }
         public DateTime? Fabricacao { get; set; }
         public DateTime? Validade { get; set; }
-        public long? FornecedorCodigo { get; set; }
+        public string FornecedorCodigo { get; set; }
         public string Fornecedor { get; set; }
         public string FornecedorCNPJ { get; set; }
     }

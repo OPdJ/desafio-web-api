@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DesafioWebAPI.Domain\DesafioWebAPI.Domain.csproj" />
+    <ProjectReference Include="..\DesafioWebAPI.Infra.CrossCutting.Utilities\DesafioWebAPI.Infra.CrossCutting.Utilities.csproj" />
   </ItemGroup>
 
 </Project>
