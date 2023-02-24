@@ -4,6 +4,7 @@ using DesafioWebAPI.Domain.Interfaces.Services;
 using DesafioWebAPI.Domain.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace DesafioWebAPI.Domain.Services
@@ -15,6 +16,11 @@ namespace DesafioWebAPI.Domain.Services
             : base(repository)
         {
             _repository = repository;
+        }
+
+        public IEnumerable<Produto> GetBy(Expression<Func<Produto, bool>> predicate)
+        {
+            return _repository.GetBy(predicate);
         }
     }
 }

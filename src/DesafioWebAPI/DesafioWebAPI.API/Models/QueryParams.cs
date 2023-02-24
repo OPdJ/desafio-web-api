@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 
 namespace DesafioWebAPI.API.Models.Produto
 {
-    public class QueryProdutoParams
+    public class QueryParams
     {
         private const int _maxPaginas = 50;
 
         private int _pagina = 10;
 
-        public int Page { get; set; } = 1;
+        public int Pagina { get; set; } = 1;
 
-        public int ProdutoPorPagina
+        public int ItemPorPagina
         {
             get
             {
@@ -32,6 +32,8 @@ namespace DesafioWebAPI.API.Models.Produto
             }
         }
 
-        public long Id { get; set; }
+        //public string Descricao { get; set; }
+        public bool? Situacao { get; set; }
+        //public string FornecedorCNPJ { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using DesafioWebAPI.Infra.CrossCutting.MappingConfig.Entities;
 using DesafioWebAPI.Infra.Data.Context.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace DesafioWebAPI.Application
 {
@@ -40,6 +41,13 @@ namespace DesafioWebAPI.Application
             var entityVM = _mapper.Map<IEnumerable<ProdutoViewModel>>(entity);
 
             return entityVM;
+        }
+
+        public IEnumerable<Produto> GetBy(Expression<Func<Produto, bool>> predicate)
+        {
+            var entity = _service.GetBy(predicate);
+
+            return entity;
         }
 
         public ProdutoViewModel GetById(long id)

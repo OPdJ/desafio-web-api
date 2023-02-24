@@ -3,6 +3,9 @@ using DesafioWebAPI.Domain.Interfaces.Repositories;
 using DesafioWebAPI.Infra.Data.Context;
 using DesafioWebAPI.Infra.Data.Repository.Common;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace DesafioWebAPI.Infra.Data.Repository
 {
@@ -14,6 +17,11 @@ namespace DesafioWebAPI.Infra.Data.Repository
             : base(context)
         {
             _context = context;
+        }
+
+        public IEnumerable<Produto> GetBy(Expression<Func<Produto, bool>> predicate)
+        {
+            return _context.Set<Produto>().Where(predicate).ToList();
         }
     }
 }

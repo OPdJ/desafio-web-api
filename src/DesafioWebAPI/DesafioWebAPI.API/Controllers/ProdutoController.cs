@@ -1,5 +1,7 @@
-﻿using DesafioWebAPI.API.Models.Produto;
+﻿using AutoMapper;
+using DesafioWebAPI.API.Models.Produto;
 using DesafioWebAPI.Application.Interfaces;
+using DesafioWebAPI.Domain.Entities;
 using DesafioWebAPI.Infra.CrossCutting.MappingConfig.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,71 +19,12 @@ namespace DesafioWebAPI.API.Controllers
     public class ProdutoController : ControllerBase
     {
         private readonly IProdutoAppService _appService;
+        private readonly IMapper _mapper;
 
-        public ProdutoController(IProdutoAppService appService)
+        public ProdutoController(IProdutoAppService appService, IMapper mapper)
         {
             _appService = appService;
-        }
-
-        // GET: api/<ProdutoController>
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            try
-            {
-                var entityVM = _appService.GetAll();
-                return Ok(entityVM);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
-            }
-        }
-
-        // GET api/<ProdutoController>/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(long id)
-        {
-            try
-            {
-                var entityVM = _appService.GetById(id);
-
-                if (entityVM == null)
-                {
-                    return Ok($"Não retornou nenhum item com o id: {id}.");
-                }
-
-                return Ok(entityVM);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
-            }
-        }
-
-        // GET api/<ProdutoController>/5
-        [HttpGet]
-        [Route("~/GetPaged")]
-        public ActionResult<string> GetPaged([FromQuery] QueryProdutoParams qp)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(qp.))
-                {
-                }
-                var entityVM = _appService.GetById(1);
-
-                if (entityVM == null)
-                {
-                    //return Ok($"Não retornou nenhum item com o id: {id}.");
-                }
-
-                return Ok(entityVM);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
-            }
+            _mapper = mapper;
         }
 
         // POST api/<ProdutoController>
@@ -157,6 +100,70 @@ namespace DesafioWebAPI.API.Controllers
             catch (Exception ex)
             {
                 //Logger
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
+            }
+        }
+
+        // GET: api/<ProdutoController>
+        [HttpGet]
+        public ActionResult<IEnumerable<string>> Get()
+        {
+            try
+            {
+                var entityVM = _appService.GetAll();
+                return Ok(entityVM);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
+            }
+        }
+
+        // GET api/<ProdutoController>/5
+        [HttpGet("{id}")]
+        public ActionResult<string> Get(long id)
+        {
+            try
+            {
+                var entityVM = _appService.GetById(id);
+
+                if (entityVM == null)
+                {
+                    return Ok($"Não retornou nenhum item com o id: {id}.");
+                }
+
+                return Ok(entityVM);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
+            }
+        }
+
+        // GET api/<ProdutoController>/5
+        [HttpGet]
+        [Route("~/GetProdutoPerPage")]
+        public ActionResult<PaginacaoProduto> GetProdutoPerPage([FromQuery] QueryParams qp)
+        {
+            try
+            {
+                var entity = new List<Produto>();
+                var entityVM = new List<ProdutoViewModel>();
+
+                if (qp.Situacao == null)
+                {
+                    entityVM = _appService.GetAll().ToList();
+                } 
+                else
+                {
+                    entity = _appService.GetBy(x => x.Situacao == qp.Situacao).ToList();
+                    entityVM = _mapper.Map<List<ProdutoViewModel>>(entity);
+                }
+
+                return PaginacaoProduto.PaginarProduto(entityVM, qp.Pagina, qp.ItemPorPagina);
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Um erro ocorreu: {ex.Message} | {ex.InnerException?.Message}");
             }
         }
