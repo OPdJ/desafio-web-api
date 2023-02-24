@@ -21,6 +21,7 @@ namespace DesafioWebAPI.Infra.CrossCutting.MappingConfig.Entities
         [MaxLength(100, ErrorMessage = "Tamanho máx. de caracteres permitido são (100).")]
         public string Fornecedor { get; set; }
         [MaxLength(14, ErrorMessage = "Tamanho máx. de caracteres permitido são (14).")]
+        [MinLength(14, ErrorMessage = "Tamanho min. de caracteres permitido são (14).")]
         public string FornecedorCNPJ { get; set; }
         public string Status 
         {
